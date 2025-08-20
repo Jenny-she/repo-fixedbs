@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FIXED - Reparación Express de Dispositivos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (typeof tailwind !== 'undefined') {
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                'fixed-black': '#000000',
+                'fixed-gray': '#F1F1F1',
+                'fixed-orange': '#E7983F',
+              },
+              fontFamily: {
+                'space': ['Space Grotesk', 'sans-serif'],
+                'bebas': ['Bebas Neue', 'cursive'],
+              }
+            }
+          }
+        };
+      }
+    });
+  </script>
+  <style>
+    .text-outline {
+      -webkit-text-stroke: 2px #E7983F;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .diagonal-section {
+      clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+    }
+
+    .diagonal-section-reverse {
+      clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
+    }
+
+    @keyframes slideInLeft {
+      from {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes pulse-border {
+      0%, 100% {
+        border-color: #E7983F;
+      }
+      50% {
+        border-color: #F1F1F1;
+      }
+    }
+
+    @keyframes rotate-slow {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes typewriter {
+      from {
+        width: 0;
+      }
+      to {
+        width: 100%;
+      }
+    }
+
+    .animate-slide-left {
+      animation: slideInLeft 0.8s ease-out;
+    }
+
+    .animate-slide-right {
+      animation: slideInRight 0.8s ease-out;
+    }
+
+    .animate-pulse-border {
+      animation: pulse-border 2s infinite;
+    }
+
+    .animate-rotate-slow {
+      animation: rotate-slow 20s linear infinite;
+    }
+
+    .hover-3d {
+      transition: transform 0.3s;
+      transform-style: preserve-3d;
+    }
+
+    .hover-3d:hover {
+      transform: rotateY(10deg) rotateX(-10deg) scale(1.05);
+    }
+
+    .gradient-border {
+      background: linear-gradient(45deg, #E7983F, #F1F1F1, #E7983F);
+      background-size: 200% 200%;
+      animation: gradient-shift 3s ease infinite;
+    }
+
+    @keyframes gradient-shift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .card-tilt {
+      transition: transform 0.3s;
+    }
+
+    .card-tilt:hover {
+      transform: perspective(1000px) rotateX(10deg) translateY(-10px);
+    }
+
+    .neon-text {
+      text-shadow: 0 0 10px #E7983F, 0 0 20px #E7983F, 0 0 30px #E7983F;
+    }
+
+    .glass-morphism {
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(231, 152, 63, 0.3);
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateX(-50%) translateY(0);
+      }
+      40% {
+        transform: translateX(-50%) translateY(-20px);
+      }
+      60% {
+        transform: translateX(-50%) translateY(-10px);
+      }
+    }
+
+    .zigzag-border {
+      background-image: linear-gradient(135deg, #E7983F 25%, transparent 25%),
+                        linear-gradient(225deg, #E7983F 25%, transparent 25%),
+                        linear-gradient(45deg, #E7983F 25%, transparent 25%),
+                        linear-gradient(315deg, #E7983F 25%, transparent 25%);
+      background-position: 10px 0, 10px 0, 0 0, 0 0;
+      background-size: 20px 20px;
+      background-repeat: repeat-x;
+    }
+
+    .text-gradient-animated {
+      background: linear-gradient(270deg, #E7983F, #F1F1F1, #E7983F);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradient-shift 3s ease infinite;
+    }
+  </style>
+</head>
+
+<body class="font-space bg-fixed-black text-fixed-gray overflow-x-hidden">
+  
+  <!-- Floating Navigation -->
+  <nav class="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 glass-morphism rounded-full px-8 py-4 animate-slide-left">
+    <div class="flex items-center space-x-8">
+      <div class="text-2xl font-bebas text-fixed-orange neon-text">FIXED</div>
+      <div class="hidden md:flex space-x-6 text-sm">
+        <a href="#servicios" class="hover:text-fixed-orange transition-colors">Servicios</a>
+        <a href="#proceso" class="hover:text-fixed-orange transition-colors">Proceso</a>
+        <a href="#garantia" class="hover:text-fixed-orange transition-colors">Garantía</a>
+      </div>
+      <a href="https://wa.me/5491234567890" 
+         class="bg-fixed-orange text-black px-4 py-2 rounded-full font-bold hover:bg-fixed-gray transition-all duration-300 flex items-center space-x-2">
+        <i data-lucide="message-circle" class="w-4 h-4"></i>
+        <span>WhatsApp</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero Section - Split Screen Design -->
+  <section class="min-h-screen relative flex flex-col lg:flex-row">
+    <!-- Left Side - Text Content -->
+    <div class="lg:w-1/2 bg-fixed-black flex items-center justify-center p-8 lg:p-16 animate-slide-left">
+      <div class="max-w-xl">
+        <h1 class="text-6xl lg:text-8xl font-bebas mb-6">
+          <span class="text-fixed-gray">ARREGLAMOS</span><br>
+          <span class="text-outline">TODO</span><br>
+          <span class="text-gradient-animated">RÁPIDO</span>
+        </h1>
+        <p class="text-xl text-gray-400 mb-8">
+          Celulares, tablets, notebooks. Si tiene pantalla, lo reparamos.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <button class="gradient-border p-0.5 rounded-lg group">
+            <div class="bg-fixed-black px-6 py-3 rounded-lg group-hover:bg-transparent transition-all duration-300">
+              <span class="text-fixed-orange group-hover:text-fixed-black font-bold">DIAGNÓSTICO GRATIS</span>
+            </div>
+          </button>
+          <button class="bg-fixed-gray text-fixed-black px-6 py-3 rounded-lg font-bold hover:bg-fixed-orange transition-all duration-300">
+            VER SERVICIOS
+          </button>
+        </div>
+        <div class="mt-12 grid grid-cols-3 gap-4">
+          <div class="text-center">
+            <div class="text-3xl font-bebas text-fixed-orange">500+</div>
+            <div class="text-xs text-gray-500">Dispositivos Reparados</div>
+          </div>
+          <div class="text-center">
+            <div class="text-3xl font-bebas text-fixed-orange">30MIN</div>
+            <div class="text-xs text-gray-500">Tiempo Promedio</div>
+          </div>
+          <div class="text-center">
+            <div class="text-3xl font-bebas text-fixed-orange">100%</div>
+            <div class="text-xs text-gray-500">Clientes Satisfechos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Side - Visual Content -->
+    <div class="lg:w-1/2 bg-fixed-gray relative overflow-hidden animate-slide-right">
+      <!-- Background Image -->
+      <div class="absolute inset-0 opacity-20">
+        <img src="assets/imgUno.png" alt="Background" class="w-full h-full object-cover" />
+      </div>
+      
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="relative">
+          <!-- Rotating Background Element -->
+          <div class="absolute inset-0 w-96 h-96 border-4 border-fixed-orange rounded-full animate-rotate-slow opacity-20"></div>
+          <div class="absolute inset-0 w-80 h-80 border-4 border-fixed-black rounded-full animate-rotate-slow opacity-20" style="animation-direction: reverse;"></div>
+          
+          <!-- Central Icons Display -->
+          <div class="relative z-10 grid grid-cols-2 gap-8 p-8">
+            <div class="bg-fixed-black rounded-2xl p-8 hover-3d cursor-pointer">
+              <i data-lucide="smartphone" class="w-16 h-16 text-fixed-orange mx-auto"></i>
+              <p class="text-fixed-orange text-center mt-4 font-bold">CELULARES</p>
+            </div>
+            <div class="bg-fixed-black rounded-2xl p-8 hover-3d cursor-pointer">
+              <i data-lucide="tablet" class="w-16 h-16 text-fixed-orange mx-auto"></i>
+              <p class="text-fixed-orange text-center mt-4 font-bold">TABLETS</p>
+            </div>
+            <div class="bg-fixed-black rounded-2xl p-8 hover-3d cursor-pointer">
+              <i data-lucide="laptop" class="w-16 h-16 text-fixed-orange mx-auto"></i>
+              <p class="text-fixed-orange text-center mt-4 font-bold">NOTEBOOKS</p>
+            </div>
+            <div class="bg-fixed-black rounded-2xl p-8 hover-3d cursor-pointer">
+              <i data-lucide="watch" class="w-16 h-16 text-fixed-orange mx-auto"></i>
+              <p class="text-fixed-orange text-center mt-4 font-bold">RELOJES</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Scroll Indicator -->
+      <div class="scroll-indicator">
+        <i data-lucide="chevron-down" class="w-8 h-8 text-fixed-black"></i>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section with Zigzag Layout -->
+  <section id="servicios" class="py-24 bg-fixed-gray relative">
+    <!-- Background Image Pattern -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="grid grid-cols-3 gap-0">
+        <img src="assets/imgUno.png" alt="Pattern" class="w-full h-64 object-cover" />
+        <img src="assets/imgDos.png" alt="Pattern" class="w-full h-64 object-cover" />
+        <img src="assets/imgTres.png" alt="Pattern" class="w-full h-64 object-cover" />
+        <img src="assets/imgTres.png" alt="Pattern" class="w-full h-64 object-cover" />
+        <img src="assets/imgUno.png" alt="Pattern" class="w-full h-64 object-cover" />
+        <img src="assets/imgDos.png" alt="Pattern" class="w-full h-64 object-cover" />
+      </div>
+    </div>
+    
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-5xl lg:text-7xl font-bebas text-fixed-black mb-4">
+          SERVICIOS <span class="text-outline">EXPRESS</span>
+        </h2>
+        <div class="zigzag-border h-5 w-full max-w-md mx-auto"></div>
+      </div>
+
+      <!-- Service Cards in Zigzag Pattern -->
+      <div class="space-y-16">
+        <!-- Service 1 - Left Aligned -->
+        <div class="flex flex-col lg:flex-row items-center gap-8">
+          <div class="lg:w-1/2 order-2 lg:order-1">
+            <div class="bg-fixed-black rounded-3xl p-8 card-tilt">
+              <div class="flex items-center mb-4">
+                <div class="w-16 h-16 bg-fixed-orange rounded-full flex items-center justify-center">
+                  <i data-lucide="smartphone-charging" class="w-8 h-8 text-fixed-black"></i>
+                </div>
+                <h3 class="text-3xl font-bebas text-fixed-orange ml-4">PANTALLAS ROTAS</h3>
+              </div>
+              <p class="text-fixed-gray mb-4">
+                Reemplazo de pantallas para todos los modelos. Usamos repuestos originales o genéricos de alta calidad según tu presupuesto.
+              </p>
+              <ul class="space-y-2 text-fixed-gray">
+                <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-fixed-orange"></i> iPhone, Samsung, Xiaomi, Motorola</li>
+                <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-fixed-orange"></i> Garantía 6 meses</li>
+                <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-fixed-orange"></i> Instalación en 30 minutos</li>
+              </ul>
+            </div>
+          </div>
+          <div class="lg:w-1/2 order-1 lg:order-2">
+            <div class="relative">
+              <div class="absolute inset-0 bg-fixed-orange blur-3xl opacity-20"></div>
+              <i data-lucide="smartphone" class="w-48 h-48 text-fixed-orange mx-auto relative z-10"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service 2 - Right Aligned -->
+        <div class="flex flex-col lg:flex-row items-center gap-8">
+          <div class="lg:w-1/2">
+            <div class="relative">
+              <div class="absolute inset-0 bg-fixed-orange blur-3xl opacity-20"></div>
+              <i data-lucide="battery-charging" class="w-48 h-48 text-fixed-orange mx-auto relative z-10"></i>
+            </div>
+          </div>
+          <div class="lg:w-1/2">
+            <div class="bg-fixed-black rounded-3xl p-8 card-tilt">
+              <div class="flex items-center mb-4">
+                <div class="w-16 h-16 bg-fixed-orange rounded-full flex items-center justify-center">
+                  <i data-lucide="battery" class="w-8 h-8 text-fixed-black"></i>
+                </div>
+                <h3 class="text-3xl font-bebas text-fixed-orange ml-4">CAMBIO DE BATERÍA</h3>
+              </div>
+              <p class="text-fixed-gray mb-4">
+                ¿Tu dispositivo no dura nada? Reemplazamos la batería con repuestos de calidad certificada.
+              </p>
+              <ul class="space-y-2 text-fixed-gray">
+                <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-fixed-orange"></i> Diagnóstico de salud de batería</li>
+                <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-fixed-orange"></i> Baterías certificadas</li>
+                <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-fixed-orange"></i> Instalación inmediata</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service 3 - Left Aligned -->
+        <div class="flex flex-col lg:flex-row items-center gap-8">
+          <div class="lg:w-1/2 order-2 lg:order-1">
+            <div class="bg-fixed-black rounded-3xl p-8 card-tilt">
+              <div class="flex items-center mb-4">
+                <div class="w-16 h-16 bg-fixed-orange rounded-full flex items-center justify-center">
+                  <i data-lucide="droplets" class="w-8 h-8 text-fixed-black"></i>
+                </div>
+                <h3 class="text-3xl font-bebas text-fixed-orange ml-4">DAÑO POR AGUA</h3>
+              </div>
+              <p class="text-fixed-gray mb-4">
+                Tratamiento especializado para dispositivos mojados. Limpieza ultrasónica y recuperación de datos.
+              </p>
+              <ul class="space-y-2 text-fixed-gray">
+                <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-fixed-orange"></i> Diagnóstico sin cargo</li>
+                <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-fixed-orange"></i> Limpieza profunda</li>
+                <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-fixed-orange"></i> Recuperación de datos</li>
+              </ul>
+            </div>
+          </div>
+          <div class="lg:w-1/2 order-1 lg:order-2">
+            <div class="relative">
+              <div class="absolute inset-0 bg-fixed-orange blur-3xl opacity-20"></div>
+              <i data-lucide="shield-alert" class="w-48 h-48 text-fixed-orange mx-auto relative z-10"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Section - Timeline Style -->
+  <section id="proceso" class="py-24 bg-fixed-black relative">
+    <div class="absolute inset-0 opacity-5">
+      <img src="assets/imgTres.png" alt="Background pattern" class="w-full h-full object-cover" />
+    </div>
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-0 left-0 w-full h-full" 
+           style="background-image: repeating-linear-gradient(45deg, transparent, transparent 35px, #E7983F 35px, #E7983F 70px);"></div>
+    </div>
+    
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-5xl lg:text-7xl font-bebas text-fixed-gray mb-4">
+          PROCESO <span class="text-gradient-animated">SIMPLE</span>
+        </h2>
+        <p class="text-xl text-gray-400">De roto a arreglado en 4 pasos</p>
+      </div>
+
+      <!-- Timeline -->
+      <div class="relative">
+        <!-- Connecting Line -->
+        <div class="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-fixed-orange hidden lg:block"></div>
+        
+        <!-- Step 1 -->
+        <div class="flex flex-col lg:flex-row items-center mb-16">
+          <div class="lg:w-1/2 lg:pr-8 text-right">
+            <div class="bg-fixed-gray text-fixed-black rounded-2xl p-6 inline-block">
+              <h3 class="text-2xl font-bebas mb-2">1. CONTACTO</h3>
+              <p>Escribinos por WhatsApp o traé tu dispositivo directamente</p>
+            </div>
+          </div>
+          <div class="w-20 h-20 bg-fixed-orange rounded-full flex items-center justify-center text-3xl font-bebas text-fixed-black my-4 lg:my-0 relative z-10">
+            1
+          </div>
+          <div class="lg:w-1/2 lg:pl-8">
+            <i data-lucide="message-square" class="w-16 h-16 text-fixed-orange"></i>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="flex flex-col lg:flex-row items-center mb-16">
+          <div class="lg:w-1/2 lg:pr-8 text-right order-2 lg:order-1">
+            <i data-lucide="search" class="w-16 h-16 text-fixed-orange ml-auto"></i>
+          </div>
+          <div class="w-20 h-20 bg-fixed-orange rounded-full flex items-center justify-center text-3xl font-bebas text-fixed-black my-4 lg:my-0 relative z-10 order-1 lg:order-2">
+            2
+          </div>
+          <div class="lg:w-1/2 lg:pl-8 order-3">
+            <div class="bg-fixed-gray text-fixed-black rounded-2xl p-6 inline-block">
+              <h3 class="text-2xl font-bebas mb-2">2. DIAGNÓSTICO</h3>
+              <p>Evaluamos el problema y te damos un presupuesto sin compromiso</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="flex flex-col lg:flex-row items-center mb-16">
+          <div class="lg:w-1/2 lg:pr-8 text-right">
+            <div class="bg-fixed-gray text-fixed-black rounded-2xl p-6 inline-block">
+              <h3 class="text-2xl font-bebas mb-2">3. REPARACIÓN</h3>
+              <p>Arreglamos tu dispositivo con repuestos de calidad mientras esperás</p>
+            </div>
+          </div>
+          <div class="w-20 h-20 bg-fixed-orange rounded-full flex items-center justify-center text-3xl font-bebas text-fixed-black my-4 lg:my-0 relative z-10">
+            3
+          </div>
+          <div class="lg:w-1/2 lg:pl-8">
+            <i data-lucide="wrench" class="w-16 h-16 text-fixed-orange"></i>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="flex flex-col lg:flex-row items-center">
+          <div class="lg:w-1/2 lg:pr-8 text-right order-2 lg:order-1">
+            <i data-lucide="sparkles" class="w-16 h-16 text-fixed-orange ml-auto"></i>
+          </div>
+          <div class="w-20 h-20 bg-fixed-orange rounded-full flex items-center justify-center text-3xl font-bebas text-fixed-black my-4 lg:my-0 relative z-10 order-1 lg:order-2">
+            4
+          </div>
+          <div class="lg:w-1/2 lg:pl-8 order-3">
+            <div class="bg-fixed-gray text-fixed-black rounded-2xl p-6 inline-block">
+              <h3 class="text-2xl font-bebas mb-2">4. ENTREGA</h3>
+              <p>Te llevás tu dispositivo funcionando perfecto con garantía escrita</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery Section -->
+  <section class="py-24 bg-fixed-gray">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-5xl lg:text-7xl font-bebas text-fixed-black mb-4">
+          TRABAJOS <span class="text-outline">REALIZADOS</span>
+        </h2>
+        <p class="text-xl text-gray-600">Algunos de nuestros casos de éxito</p>
+      </div>
+
+      <!-- Gallery Grid -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="col-span-2 row-span-2 bg-fixed-black rounded-2xl relative group overflow-hidden">
+          <img src="assets/imgDos.png" alt="iPhone 14 Pro reparado" class="w-full h-full object-cover rounded-2xl" />
+          <div class="absolute inset-0 bg-gradient-to-t from-fixed-black via-fixed-black/50 to-transparent">
+            <div class="absolute bottom-0 left-0 right-0 p-8">
+              <h3 class="text-2xl font-bebas text-fixed-orange">iPhone 14 Pro</h3>
+              <p class="text-fixed-gray mt-2">Pantalla reemplazada en 25 min</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-fixed-orange rounded-2xl p-6 hover-3d">
+          <i data-lucide="battery" class="w-16 h-16 text-fixed-black mx-auto"></i>
+          <p class="text-fixed-black text-center mt-2 font-bold">+50 Baterías</p>
+        </div>
+        
+        <div class="bg-fixed-black rounded-2xl p-6 hover-3d">
+          <i data-lucide="droplets" class="w-16 h-16 text-fixed-orange mx-auto"></i>
+          <p class="text-fixed-gray text-center mt-2">Recuperación agua</p>
+        </div>
+        
+        <div class="bg-fixed-black rounded-2xl p-6 hover-3d">
+          <i data-lucide="tablet" class="w-16 h-16 text-fixed-orange mx-auto"></i>
+          <p class="text-fixed-gray text-center mt-2">iPad Air</p>
+        </div>
+        
+        <div class="bg-fixed-orange rounded-2xl p-6 hover-3d">
+          <i data-lucide="laptop" class="w-16 h-16 text-fixed-black mx-auto"></i>
+          <p class="text-fixed-black text-center mt-2 font-bold">MacBook Pro</p>
+        </div>
+        
+        <div class="col-span-2 bg-gradient-to-r from-fixed-black to-gray-900 rounded-2xl relative overflow-hidden">
+          <img src="assets/imgTres.png" alt="Estadísticas" class="w-full h-full object-cover opacity-30" />
+          <div class="absolute inset-0 bg-gradient-to-r from-fixed-black/90 to-gray-900/90"></div>
+          <div class="relative z-10 p-8 flex items-center justify-between">
+            <div>
+              <h3 class="text-3xl font-bebas text-fixed-orange">ESTADÍSTICAS</h3>
+              <p class="text-fixed-gray">Este mes</p>
+            </div>
+            <div class="flex space-x-8">
+              <div class="text-center">
+                <div class="text-4xl font-bebas text-fixed-orange">127</div>
+                <div class="text-sm text-fixed-gray">Reparaciones</div>
+              </div>
+              <div class="text-center">
+                <div class="text-4xl font-bebas text-fixed-orange">4.9</div>
+                <div class="text-sm text-fixed-gray">Rating</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Warranty Section -->
+  <section id="garantia" class="py-24 bg-fixed-black relative overflow-hidden">
+    <div class="absolute inset-0">
+      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-fixed-orange/20 rounded-full blur-3xl"></div>
+    </div>
+    
+    <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-5xl lg:text-7xl font-bebas text-fixed-gray mb-8">
+        GARANTÍA <span class="neon-text">TOTAL</span>
+      </h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        <div class="glass-morphism rounded-2xl p-8">
+          <div class="text-5xl font-bebas text-fixed-orange mb-4">6</div>
+          <h3 class="text-xl font-bold text-fixed-gray mb-2">MESES</h3>
+          <p class="text-gray-400">De garantía en todas las reparaciones</p>
+        </div>
+        
+        <div class="glass-morphism rounded-2xl p-8">
+          <div class="text-5xl font-bebas text-fixed-orange mb-4">100%</div>
+          <h3 class="text-xl font-bold text-fixed-gray mb-2">CUBIERTO</h3>
+          <p class="text-gray-400">Repuestos y mano de obra incluidos</p>
+        </div>
+        
+        <div class="glass-morphism rounded-2xl p-8">
+          <div class="text-5xl font-bebas text-fixed-orange mb-4">24/7</div>
+          <h3 class="text-xl font-bold text-fixed-gray mb-2">SOPORTE</h3>
+          <p class="text-gray-400">Atención por WhatsApp siempre</p>
+        </div>
+      </div>
+
+      <p class="text-xl text-gray-400 mb-12 max-w-3xl mx-auto">
+        Tu tranquilidad es nuestra prioridad. Por eso respaldamos cada trabajo con una garantía escrita 
+        que cubre cualquier defecto en los repuestos o la instalación.
+      </p>
+
+      <!-- Final CTA -->
+      <div class="bg-gradient-to-r from-fixed-orange via-yellow-500 to-fixed-orange p-1 rounded-2xl animate-pulse-border">
+        <div class="bg-fixed-black rounded-2xl p-12">
+          <h3 class="text-4xl font-bebas text-fixed-gray mb-6">
+            ¿TENÉS UN DISPOSITIVO ROTO?
+          </h3>
+          <p class="text-xl text-gray-400 mb-8">
+            No esperes más. Diagnóstico gratuito y sin compromiso.
+          </p>
+          <a href="https://wa.me/5491234567890" 
+             class="inline-flex items-center space-x-3 bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-4 rounded-full text-lg font-bold hover:from-green-600 hover:to-green-700 transform hover:scale-110 transition-all duration-300">
+            <i data-lucide="message-circle" class="w-6 h-6"></i>
+            <span>ESCRIBINOS AHORA</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="py-24 bg-fixed-gray">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <!-- Contact Info -->
+        <div>
+          <h2 class="text-4xl lg:text-6xl font-bebas text-fixed-black mb-8">
+            ESTAMOS <span class="text-outline">ACÁ</span>
+          </h2>
+          
+          <div class="space-y-6">
+            <div class="flex items-start space-x-4">
+              <div class="w-12 h-12 bg-fixed-orange rounded-full flex items-center justify-center flex-shrink-0">
+                <i data-lucide="map-pin" class="w-6 h-6 text-fixed-black"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-fixed-black">Ubicación</h3>
+                <p class="text-gray-600">Belgrano, CABA<br>A pasos del subte y colectivos</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start space-x-4">
+              <div class="w-12 h-12 bg-fixed-orange rounded-full flex items-center justify-center flex-shrink-0">
+                <i data-lucide="clock" class="w-6 h-6 text-fixed-black"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-fixed-black">Horarios</h3>
+                <p class="text-gray-600">Lunes a Sábado: 9:00 - 19:00<br>Domingos: Cerrado</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start space-x-4">
+              <div class="w-12 h-12 bg-fixed-orange rounded-full flex items-center justify-center flex-shrink-0">
+                <i data-lucide="phone" class="w-6 h-6 text-fixed-black"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-fixed-black">Contacto</h3>
+                <p class="text-gray-600">WhatsApp: +54 9 11 1234-5678<br>info@fixedbsas.com</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start space-x-4">
+              <div class="w-12 h-12 bg-fixed-orange rounded-full flex items-center justify-center flex-shrink-0">
+                <i data-lucide="credit-card" class="w-6 h-6 text-fixed-black"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-fixed-black">Pagos</h3>
+                <p class="text-gray-600">Efectivo, débito, crédito<br>Transferencia y MercadoPago</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Contact Form -->
+        <div class="bg-fixed-black rounded-3xl p-8">
+          <h3 class="text-3xl font-bebas text-fixed-orange mb-6">CONSULTA RÁPIDA</h3>
+          <form class="space-y-4">
+            <input type="text" 
+                   placeholder="Tu nombre" 
+                   class="w-full bg-gray-900 border border-gray-800 rounded-xl px-6 py-3 text-fixed-gray placeholder-gray-500 focus:border-fixed-orange focus:outline-none transition-colors">
+            
+            <input type="tel" 
+                   placeholder="Tu teléfono" 
+                   class="w-full bg-gray-900 border border-gray-800 rounded-xl px-6 py-3 text-fixed-gray placeholder-gray-500 focus:border-fixed-orange focus:outline-none transition-colors">
+            
+            <select class="w-full bg-gray-900 border border-gray-800 rounded-xl px-6 py-3 text-fixed-gray focus:border-fixed-orange focus:outline-none transition-colors">
+              <option value="">Tipo de dispositivo</option>
+              <option value="celular">Celular</option>
+              <option value="tablet">Tablet</option>
+              <option value="notebook">Notebook</option>
+              <option value="otro">Otro</option>
+            </select>
+            
+            <textarea placeholder="¿Qué problema tiene?" 
+                      rows="4" 
+                      class="w-full bg-gray-900 border border-gray-800 rounded-xl px-6 py-3 text-fixed-gray placeholder-gray-500 focus:border-fixed-orange focus:outline-none transition-colors resize-none"></textarea>
+            
+            <button type="submit" 
+                    class="w-full bg-fixed-orange text-fixed-black py-4 rounded-xl font-bold hover:bg-fixed-gray transition-all duration-300">
+              ENVIAR CONSULTA
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Navigation Buttons -->
+  <section class="py-12 bg-gradient-to-b from-fixed-black to-gray-900">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+        <a href="boceto.html" 
+           class="group flex items-center space-x-3 bg-fixed-gray text-fixed-black px-8 py-4 rounded-full hover:bg-gray-300 transition-all duration-300 shadow-xl">
+          <i data-lucide="arrow-left" class="w-5 h-5 group-hover:-translate-x-1 transition-transform"></i>
+          <span class="font-bold">Boceto Anterior</span>
+        </a>
+        <a href="index.html" 
+           class="group flex items-center space-x-3 bg-gradient-to-r from-gray-800 to-fixed-black text-white px-8 py-4 rounded-full hover:from-gray-700 hover:to-gray-900 transition-all duration-300 shadow-xl">
+          <i data-lucide="home" class="w-5 h-5"></i>
+          <span class="font-bold">Volver al Índice</span>
+        </a>
+        <a href="boceto2.html" 
+           class="group flex items-center space-x-3 bg-fixed-orange text-fixed-black px-8 py-4 rounded-full hover:bg-yellow-500 transition-all duration-300 shadow-xl animate-glow">
+          <span class="font-bold">Siguiente Boceto</span>
+          <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+        </a>
+      </div>
+      <div class="text-center mt-6">
+        <p class="text-gray-400">Estás viendo: <span class="font-bold text-fixed-orange">Boceto Dinámico (2 de 3)</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-fixed-black py-12 border-t border-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="text-4xl font-bebas text-fixed-orange neon-text mb-4 md:mb-0">FIXED</div>
+        
+        <div class="flex space-x-6 text-gray-500 text-sm">
+          <a href="#" class="hover:text-fixed-orange transition-colors">Términos</a>
+          <a href="#" class="hover:text-fixed-orange transition-colors">Privacidad</a>
+          <a href="#" class="hover:text-fixed-orange transition-colors">Garantía</a>
+        </div>
+        
+        <div class="text-gray-500 text-sm mt-4 md:mt-0">
+          © 2024 FIXED. Tu dispositivo roto, FIXED en minutos.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize Lucide icons
+      lucide.createIcons();
+      
+      // Re-initialize Lucide icons for navigation buttons
+      setTimeout(() => {
+        lucide.createIcons();
+      }, 100);
+      
+      // Smooth scrolling for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        });
+      });
+
+      // Form submission handler
+      const form = document.querySelector('form');
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          const submitBtn = this.querySelector('button[type="submit"]');
+          const originalText = submitBtn.textContent;
+          
+          // Show loading state
+          submitBtn.textContent = 'ENVIANDO...';
+          submitBtn.disabled = true;
+          
+          // Simulate submission
+          setTimeout(() => {
+            submitBtn.textContent = '¡ENVIADO!';
+            submitBtn.style.backgroundColor = '#10b981';
+            
+            // Reset form
+            this.reset();
+            
+            // Restore button after delay
+            setTimeout(() => {
+              submitBtn.textContent = originalText;
+              submitBtn.style.backgroundColor = '';
+              submitBtn.disabled = false;
+            }, 3000);
+          }, 1500);
+        });
+      }
+
+      // Parallax effect on scroll
+      let ticking = false;
+      function updateParallax() {
+        const scrolled = window.pageYOffset;
+        const parallaxElements = document.querySelectorAll('.animate-rotate-slow');
+        
+        parallaxElements.forEach(el => {
+          const speed = 0.5;
+          el.style.transform = `rotate(${scrolled * speed}deg)`;
+        });
+        
+        ticking = false;
+      }
+
+      function requestTick() {
+        if (!ticking) {
+          window.requestAnimationFrame(updateParallax);
+          ticking = true;
+        }
+      }
+
+      window.addEventListener('scroll', requestTick);
+
+      // Intersection Observer for animations
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-slide-up');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      // Observe elements
+      document.querySelectorAll('.card-tilt').forEach(el => {
+        observer.observe(el);
+      });
+
+      console.log('FIXED v2 Landing Page loaded!');
+    });
+
+    // Add CSS animation for slide up
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slide-up {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-slide-up {
+        animation: slide-up 0.6s ease-out;
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+
+</html>

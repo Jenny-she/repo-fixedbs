@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FIXED - Servicio Premium de Reparación</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (typeof tailwind !== 'undefined') {
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                'fixed-black': '#000000',
+                'fixed-gray': '#F1F1F1',
+                'fixed-orange': '#E7983F',
+              },
+              fontFamily: {
+                'dm': ['DM Sans', 'sans-serif'],
+                'playfair': ['Playfair Display', 'serif'],
+              }
+            }
+          }
+        };
+      }
+    });
+  </script>
+  <style>
+    /* Custom Animations */
+    @keyframes float-up {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(5deg); }
+    }
+
+    @keyframes slide-down {
+      from { transform: translateY(-100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    @keyframes reveal-text {
+      from { clip-path: inset(0 100% 0 0); }
+      to { clip-path: inset(0 0 0 0); }
+    }
+
+    @keyframes pulse-soft {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.8; }
+    }
+
+    .animate-float-up {
+      animation: float-up 4s ease-in-out infinite;
+    }
+
+    .animate-slide-down {
+      animation: slide-down 1s ease-out;
+    }
+
+    .animate-marquee {
+      animation: marquee 20s linear infinite;
+    }
+
+    .animate-reveal {
+      animation: reveal-text 1.5s ease-out;
+    }
+
+    .animate-pulse-soft {
+      animation: pulse-soft 3s ease-in-out infinite;
+    }
+
+    /* Stacked Cards Effect */
+    .card-stack {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-stack::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      right: -8px;
+      bottom: -8px;
+      background: #E7983F;
+      opacity: 0.3;
+      z-index: -1;
+      border-radius: 24px;
+      transform: rotate(-2deg);
+    }
+
+    .card-stack::after {
+      content: '';
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      right: -16px;
+      bottom: -16px;
+      background: #F1F1F1;
+      opacity: 0.2;
+      z-index: -2;
+      border-radius: 24px;
+      transform: rotate(-4deg);
+    }
+
+    /* Bento Grid Hover */
+    .bento-hover {
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .bento-hover:hover {
+      transform: scale(1.02);
+      box-shadow: 0 20px 40px rgba(231, 152, 63, 0.3);
+    }
+
+    /* Smooth Gradient */
+    .gradient-smooth {
+      background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+    }
+
+    /* Text Mask */
+    .text-mask {
+      background: linear-gradient(45deg, #E7983F, #F1F1F1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Noise Texture */
+    .noise-texture {
+      position: relative;
+    }
+
+    .noise-texture::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Magnetic Button Effect */
+    .magnetic-btn {
+      position: relative;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Parallax Layers */
+    .parallax-layer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #000000;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #E7983F;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #F1F1F1;
+    }
+
+    /* Cursor Glow */
+    .cursor-glow {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #E7983F, transparent);
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.5;
+      transition: transform 0.1s ease;
+    }
+  </style>
+</head>
+
+<body class="font-dm bg-fixed-black text-fixed-gray overflow-x-hidden noise-texture">
+
+  <!-- Minimal Navigation -->
+  <nav class="fixed top-0 w-full z-50 bg-fixed-black/80 backdrop-blur-md border-b border-fixed-gray/10 animate-slide-down">
+    <div class="max-w-7xl mx-auto px-6 py-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-12">
+          <h1 class="text-2xl font-playfair font-bold text-fixed-orange">FIXED</h1>
+          <div class="hidden md:flex space-x-8 text-sm">
+            <a href="#servicios" class="hover:text-fixed-orange transition-colors">Servicios</a>
+            <a href="#proceso" class="hover:text-fixed-orange transition-colors">Proceso</a>
+            <a href="#precios" class="hover:text-fixed-orange transition-colors">Precios</a>
+            <a href="#contacto" class="hover:text-fixed-orange transition-colors">Contacto</a>
+          </div>
+        </div>
+        <button class="magnetic-btn bg-fixed-orange text-fixed-black px-6 py-2 rounded-full text-sm font-medium hover:bg-fixed-gray transition-colors">
+          Consulta Gratis
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section - Minimal & Elegant -->
+  <section class="min-h-screen relative flex items-center justify-center gradient-smooth">
+    <!-- Floating Elements -->
+    <div class="absolute inset-0 overflow-hidden">
+      <div class="absolute top-20 left-10 w-32 h-32 bg-fixed-orange/10 rounded-full blur-3xl animate-pulse-soft"></div>
+      <div class="absolute bottom-20 right-10 w-48 h-48 bg-fixed-gray/10 rounded-full blur-3xl animate-pulse-soft" style="animation-delay: 1.5s;"></div>
+    </div>
+
+    <div class="relative z-10 max-w-6xl mx-auto px-6 text-center">
+      <!-- Main Title -->
+      <div class="mb-12">
+        <h1 class="text-7xl lg:text-9xl font-playfair font-black leading-none mb-6">
+          <span class="block animate-reveal">Reparamos</span>
+          <span class="block text-mask animate-reveal" style="animation-delay: 0.3s;">Tu Mundo</span>
+          <span class="block animate-reveal" style="animation-delay: 0.6s;">Digital</span>
+        </h1>
+        <p class="text-xl text-gray-400 max-w-2xl mx-auto animate-reveal" style="animation-delay: 0.9s;">
+          Servicio premium de reparación para dispositivos que exigen excelencia.
+        </p>
+      </div>
+
+      <!-- Stacked Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20">
+        <div class="card-stack bg-fixed-gray text-fixed-black rounded-3xl p-8 animate-float-up">
+          <i data-lucide="zap" class="w-12 h-12 mb-4 text-fixed-orange"></i>
+          <h3 class="text-2xl font-playfair font-bold mb-2">Rápido</h3>
+          <p>30 minutos promedio</p>
+        </div>
+        <div class="card-stack bg-fixed-gray text-fixed-black rounded-3xl p-8 animate-float-up" style="animation-delay: 0.2s;">
+          <i data-lucide="shield-check" class="w-12 h-12 mb-4 text-fixed-orange"></i>
+          <h3 class="text-2xl font-playfair font-bold mb-2">Garantizado</h3>
+          <p>6 meses de cobertura</p>
+        </div>
+        <div class="card-stack bg-fixed-gray text-fixed-black rounded-3xl p-8 animate-float-up" style="animation-delay: 0.4s;">
+          <i data-lucide="award" class="w-12 h-12 mb-4 text-fixed-orange"></i>
+          <h3 class="text-2xl font-playfair font-bold mb-2">Premium</h3>
+          <p>Repuestos originales</p>
+        </div>
+      </div>
+
+      <!-- Hero Image Gallery -->
+      <div class="mt-20 grid grid-cols-3 gap-4 max-w-4xl mx-auto">
+        <img src="assets/imgUno.png" alt="Reparación 1" class="rounded-2xl w-full h-32 object-cover opacity-80 hover:opacity-100 transition-opacity" />
+        <img src="assets/imgDos.png" alt="Reparación 2" class="rounded-2xl w-full h-32 object-cover opacity-80 hover:opacity-100 transition-opacity" />
+        <img src="assets/imgTres.png" alt="Reparación 3" class="rounded-2xl w-full h-32 object-cover opacity-80 hover:opacity-100 transition-opacity" />
+      </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+      <div class="w-6 h-10 border-2 border-fixed-gray/30 rounded-full relative">
+        <div class="absolute top-2 left-1/2 transform -translate-x-1/2 w-1 h-3 bg-fixed-orange rounded-full animate-bounce"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Marquee Section -->
+  <section class="py-8 bg-fixed-gray overflow-hidden">
+    <div class="flex animate-marquee">
+      <div class="flex space-x-8 items-center">
+        <span class="text-2xl font-playfair text-fixed-black">PANTALLAS</span>
+        <span class="text-fixed-orange text-2xl">•</span>
+        <span class="text-2xl font-playfair text-fixed-black">BATERÍAS</span>
+        <span class="text-fixed-orange text-2xl">•</span>
+        <span class="text-2xl font-playfair text-fixed-black">CÁMARAS</span>
+        <span class="text-fixed-orange text-2xl">•</span>
+        <span class="text-2xl font-playfair text-fixed-black">BOTONES</span>
+        <span class="text-fixed-orange text-2xl">•</span>
+        <span class="text-2xl font-playfair text-fixed-black">PUERTOS</span>
+        <span class="text-fixed-orange text-2xl">•</span>
+        <span class="text-2xl font-playfair text-fixed-black">SOFTWARE</span>
+        <span class="text-fixed-orange text-2xl">•</span>
+        <span class="text-2xl font-playfair text-fixed-black">AGUA</span>
+        <span class="text-fixed-orange text-2xl">•</span>
+      </div>
+      <!-- Duplicate for seamless loop -->
+      <div class="flex space-x-8 items-center ml-8">
+        <span class="text-2xl font-playfair text-fixed-black">PANTALLAS</span>
+        <span class="text-fixed-orange text-2xl">•</span>
+        <span class="text-2xl font-playfair text-fixed-black">BATERÍAS</span>
+        <span class="text-fixed-orange text-2xl">•</span>
+        <span class="text-2xl font-playfair text-fixed-black">CÁMARAS</span>
+        <span class="text-fixed-orange text-2xl">•</span>
+        <span class="text-2xl font-playfair text-fixed-black">BOTONES</span>
+        <span class="text-fixed-orange text-2xl">•</span>
+        <span class="text-2xl font-playfair text-fixed-black">PUERTOS</span>
+        <span class="text-fixed-orange text-2xl">•</span>
+        <span class="text-2xl font-playfair text-fixed-black">SOFTWARE</span>
+        <span class="text-fixed-orange text-2xl">•</span>
+        <span class="text-2xl font-playfair text-fixed-black">AGUA</span>
+        <span class="text-fixed-orange text-2xl">•</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services - Bento Grid -->
+  <section id="servicios" class="py-24 bg-fixed-black">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="mb-16">
+        <h2 class="text-6xl font-playfair font-bold mb-4">Servicios</h2>
+        <p class="text-xl text-gray-400">Soluciones integrales para cada problema</p>
+      </div>
+
+      <!-- Bento Grid Layout -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <!-- Large Card -->
+        <div class="md:col-span-2 md:row-span-2 bg-fixed-orange rounded-3xl p-10 bento-hover relative overflow-hidden">
+          <img src="assets/imgUno.png" alt="Pantallas" class="absolute inset-0 w-full h-full object-cover opacity-20" />
+          <div class="relative z-10">
+            <i data-lucide="smartphone" class="w-16 h-16 text-fixed-black mb-6"></i>
+            <h3 class="text-4xl font-playfair font-bold text-fixed-black mb-4">Pantallas</h3>
+            <p class="text-fixed-black/80 text-lg mb-6">
+              Reemplazo profesional con repuestos originales o genéricos de alta calidad.
+            </p>
+            <div class="flex items-center space-x-4">
+              <span class="bg-fixed-black text-fixed-gray px-4 py-2 rounded-full text-sm">30 min</span>
+              <span class="bg-fixed-black text-fixed-gray px-4 py-2 rounded-full text-sm">Garantía 6 meses</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Medium Cards -->
+        <div class="md:col-span-1 bg-gradient-to-br from-gray-900 to-fixed-black rounded-3xl p-8 bento-hover border border-fixed-gray/10">
+          <i data-lucide="battery-charging" class="w-12 h-12 text-fixed-orange mb-4"></i>
+          <h3 class="text-2xl font-playfair font-bold mb-2">Baterías</h3>
+          <p class="text-gray-400">Recuperá la autonomía original</p>
+        </div>
+
+        <div class="md:col-span-1 bg-gradient-to-br from-gray-900 to-fixed-black rounded-3xl p-8 bento-hover border border-fixed-gray/10">
+          <i data-lucide="camera" class="w-12 h-12 text-fixed-orange mb-4"></i>
+          <h3 class="text-2xl font-playfair font-bold mb-2">Cámaras</h3>
+          <p class="text-gray-400">Volvé a capturar momentos</p>
+        </div>
+
+        <!-- Wide Card -->
+        <div class="md:col-span-2 bg-fixed-gray rounded-3xl p-8 bento-hover">
+          <div class="flex items-center justify-between">
+            <div>
+              <i data-lucide="droplets" class="w-12 h-12 text-fixed-black mb-4"></i>
+              <h3 class="text-3xl font-playfair font-bold text-fixed-black mb-2">Daño por Agua</h3>
+              <p class="text-fixed-black/70">Tratamiento ultrasónico y recuperación de datos</p>
+            </div>
+            <div class="text-right">
+              <div class="text-5xl font-bold text-fixed-orange">85%</div>
+              <div class="text-fixed-black/60">Tasa de éxito</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Small Cards -->
+        <div class="bg-gradient-to-br from-gray-900 to-fixed-black rounded-3xl p-8 bento-hover border border-fixed-gray/10">
+          <i data-lucide="wifi" class="w-12 h-12 text-fixed-orange mb-4"></i>
+          <h3 class="text-xl font-playfair font-bold mb-2">Conectividad</h3>
+          <p class="text-gray-400 text-sm">WiFi, Bluetooth, señal</p>
+        </div>
+
+        <div class="bg-gradient-to-br from-gray-900 to-fixed-black rounded-3xl p-8 bento-hover border border-fixed-gray/10">
+          <i data-lucide="volume-2" class="w-12 h-12 text-fixed-orange mb-4"></i>
+          <h3 class="text-xl font-playfair font-bold mb-2">Audio</h3>
+          <p class="text-gray-400 text-sm">Parlantes y micrófonos</p>
+        </div>
+
+        <div class="bg-gradient-to-br from-gray-900 to-fixed-black rounded-3xl p-8 bento-hover border border-fixed-gray/10">
+          <i data-lucide="power" class="w-12 h-12 text-fixed-orange mb-4"></i>
+          <h3 class="text-xl font-playfair font-bold mb-2">Botones</h3>
+          <p class="text-gray-400 text-sm">Power, volumen, home</p>
+        </div>
+
+        <div class="bg-gradient-to-br from-gray-900 to-fixed-black rounded-3xl p-8 bento-hover border border-fixed-gray/10">
+          <i data-lucide="usb" class="w-12 h-12 text-fixed-orange mb-4"></i>
+          <h3 class="text-xl font-playfair font-bold mb-2">Puertos</h3>
+          <p class="text-gray-400 text-sm">USB, Lightning, Jack</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Section - Minimalist Timeline -->
+  <section id="proceso" class="py-24 bg-fixed-gray">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-20">
+        <h2 class="text-6xl font-playfair font-bold text-fixed-black mb-4">Proceso Simple</h2>
+        <p class="text-xl text-gray-600">4 pasos hacia la solución</p>
+      </div>
+
+      <div class="relative">
+        <!-- Timeline Line -->
+        <div class="absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-fixed-orange/20"></div>
+
+        <!-- Steps -->
+        <div class="space-y-20">
+          <!-- Step 1 -->
+          <div class="flex items-center">
+            <div class="w-1/2 text-right pr-12">
+              <h3 class="text-3xl font-playfair font-bold text-fixed-black mb-2">Contacto</h3>
+              <p class="text-gray-600">WhatsApp, llamada o visita directa</p>
+            </div>
+            <div class="w-16 h-16 bg-fixed-orange rounded-full flex items-center justify-center relative z-10">
+              <span class="text-2xl font-bold text-fixed-black">1</span>
+            </div>
+            <div class="w-1/2 pl-12">
+              <div class="bg-white rounded-2xl p-6 shadow-lg">
+                <i data-lucide="message-circle" class="w-8 h-8 text-fixed-orange"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="flex items-center">
+            <div class="w-1/2 text-right pr-12">
+              <div class="bg-white rounded-2xl p-6 shadow-lg ml-auto">
+                <i data-lucide="search" class="w-8 h-8 text-fixed-orange"></i>
+              </div>
+            </div>
+            <div class="w-16 h-16 bg-fixed-orange rounded-full flex items-center justify-center relative z-10">
+              <span class="text-2xl font-bold text-fixed-black">2</span>
+            </div>
+            <div class="w-1/2 pl-12">
+              <h3 class="text-3xl font-playfair font-bold text-fixed-black mb-2">Diagnóstico</h3>
+              <p class="text-gray-600">Evaluación profesional sin cargo</p>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="flex items-center">
+            <div class="w-1/2 text-right pr-12">
+              <h3 class="text-3xl font-playfair font-bold text-fixed-black mb-2">Reparación</h3>
+              <p class="text-gray-600">Trabajo profesional con repuestos de calidad</p>
+            </div>
+            <div class="w-16 h-16 bg-fixed-orange rounded-full flex items-center justify-center relative z-10">
+              <span class="text-2xl font-bold text-fixed-black">3</span>
+            </div>
+            <div class="w-1/2 pl-12">
+              <div class="bg-white rounded-2xl p-6 shadow-lg">
+                <i data-lucide="wrench" class="w-8 h-8 text-fixed-orange"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="flex items-center">
+            <div class="w-1/2 text-right pr-12">
+              <div class="bg-white rounded-2xl p-6 shadow-lg ml-auto">
+                <i data-lucide="check-circle" class="w-8 h-8 text-fixed-orange"></i>
+              </div>
+            </div>
+            <div class="w-16 h-16 bg-fixed-orange rounded-full flex items-center justify-center relative z-10">
+              <span class="text-2xl font-bold text-fixed-black">4</span>
+            </div>
+            <div class="w-1/2 pl-12">
+              <h3 class="text-3xl font-playfair font-bold text-fixed-black mb-2">Entrega</h3>
+              <p class="text-gray-600">Dispositivo funcionando con garantía</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section id="precios" class="py-24 bg-fixed-black relative overflow-hidden">
+    <div class="absolute inset-0">
+      <img src="assets/imgDos.png" alt="Background" class="w-full h-full object-cover opacity-5" />
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <h2 class="text-6xl font-playfair font-bold text-fixed-gray mb-4">Transparencia Total</h2>
+        <p class="text-xl text-gray-400">Precios claros, sin sorpresas</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Basic Plan -->
+        <div class="bg-gradient-to-b from-gray-900 to-fixed-black rounded-3xl p-8 border border-fixed-gray/10">
+          <h3 class="text-2xl font-playfair font-bold mb-4">Diagnóstico</h3>
+          <div class="text-5xl font-bold text-fixed-orange mb-6">GRATIS</div>
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-fixed-orange mr-3"></i>
+              <span>Evaluación completa</span>
+            </li>
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-fixed-orange mr-3"></i>
+              <span>Sin compromiso</span>
+            </li>
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-fixed-orange mr-3"></i>
+              <span>En 10 minutos</span>
+            </li>
+          </ul>
+          <button class="w-full py-3 border border-fixed-orange text-fixed-orange rounded-full hover:bg-fixed-orange hover:text-fixed-black transition-all">
+            Solicitar
+          </button>
+        </div>
+
+        <!-- Premium Plan -->
+        <div class="bg-fixed-orange rounded-3xl p-8 transform scale-105 shadow-2xl">
+          <div class="bg-fixed-black text-fixed-orange text-xs px-3 py-1 rounded-full inline-block mb-4">MÁS POPULAR</div>
+          <h3 class="text-2xl font-playfair font-bold text-fixed-black mb-4">Reparación Express</h3>
+          <div class="text-5xl font-bold text-fixed-black mb-6">30 MIN</div>
+          <ul class="space-y-4 mb-8 text-fixed-black">
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-fixed-black mr-3"></i>
+              <span>Repuestos originales</span>
+            </li>
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-fixed-black mr-3"></i>
+              <span>Garantía 6 meses</span>
+            </li>
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-fixed-black mr-3"></i>
+              <span>Mientras esperás</span>
+            </li>
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-fixed-black mr-3"></i>
+              <span>Backup de datos</span>
+            </li>
+          </ul>
+          <button class="w-full py-3 bg-fixed-black text-fixed-orange rounded-full hover:bg-gray-900 transition-all font-bold">
+            Consultar Precio
+          </button>
+        </div>
+
+        <!-- Enterprise Plan -->
+        <div class="bg-gradient-to-b from-gray-900 to-fixed-black rounded-3xl p-8 border border-fixed-gray/10">
+          <h3 class="text-2xl font-playfair font-bold mb-4">Empresas</h3>
+          <div class="text-5xl font-bold text-fixed-orange mb-6">B2B</div>
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-fixed-orange mr-3"></i>
+              <span>Servicio a domicilio</span>
+            </li>
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-fixed-orange mr-3"></i>
+              <span>Facturación</span>
+            </li>
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-fixed-orange mr-3"></i>
+              <span>Soporte prioritario</span>
+            </li>
+            <li class="flex items-center">
+              <i data-lucide="check" class="w-5 h-5 text-fixed-orange mr-3"></i>
+              <span>Descuentos por volumen</span>
+            </li>
+          </ul>
+          <button class="w-full py-3 border border-fixed-orange text-fixed-orange rounded-full hover:bg-fixed-orange hover:text-fixed-black transition-all">
+            Contactar
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Carousel -->
+  <section class="py-24 bg-fixed-gray">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <h2 class="text-6xl font-playfair font-bold text-fixed-black mb-4">Voces que Confían</h2>
+        <p class="text-xl text-gray-600">Historias reales de clientes satisfechos</p>
+      </div>
+
+      <!-- Testimonial Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-white rounded-3xl p-8 shadow-lg">
+          <div class="flex mb-4">
+            <i data-lucide="star" class="w-5 h-5 text-yellow-500 fill-current"></i>
+            <i data-lucide="star" class="w-5 h-5 text-yellow-500 fill-current"></i>
+            <i data-lucide="star" class="w-5 h-5 text-yellow-500 fill-current"></i>
+            <i data-lucide="star" class="w-5 h-5 text-yellow-500 fill-current"></i>
+            <i data-lucide="star" class="w-5 h-5 text-yellow-500 fill-current"></i>
+          </div>
+          <p class="text-gray-700 mb-6 italic">
+            "Increíble rapidez y profesionalismo. Mi iPhone quedó como nuevo en menos de media hora."
+          </p>
+          <div class="flex items-center">
+            <div class="w-12 h-12 bg-fixed-orange rounded-full flex items-center justify-center text-fixed-black font-bold">
+              JG
+            </div>
+            <div class="ml-4">
+              <p class="font-bold text-fixed-black">Juan García</p>
+              <p class="text-sm text-gray-500">iPhone 13 Pro</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-8 shadow-lg">
+          <div class="flex mb-4">
+            <i data-lucide="star" class="w-5 h-5 text-yellow-500 fill-current"></i>
+            <i data-lucide="star" class="w-5 h-5 text-yellow-500 fill-current"></i>
+            <i data-lucide="star" class="w-5 h-5 text-yellow-500 fill-current"></i>
+            <i data-lucide="star" class="w-5 h-5 text-yellow-500 fill-current"></i>
+            <i data-lucide="star" class="w-5 h-5 text-yellow-500 fill-current"></i>
+          </div>
+          <p class="text-gray-700 mb-6 italic">
+            "Salvaron todos mis datos cuando pensé que había perdido todo. Servicio excepcional."
+          </p>
+          <div class="flex items-center">
+            <div class="w-12 h-12 bg-fixed-orange rounded-full flex items-center justify-center text-fixed-black font-bold">
+              ML
+            </div>
+            <div class="ml-4">
+              <p class="font-bold text-fixed-black">María López</p>
+              <p class="text-sm text-gray-500">MacBook Air</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-8 shadow-lg">
+          <div class="flex mb-4">
+            <i data-lucide="star" class="w-5 h-5 text-yellow-500 fill-current"></i>
+            <i data-lucide="star" class="w-5 h-5 text-yellow-500 fill-current"></i>
+            <i data-lucide="star" class="w-5 h-5 text-yellow-500 fill-current"></i>
+            <i data-lucide="star" class="w-5 h-5 text-yellow-500 fill-current"></i>
+            <i data-lucide="star" class="w-5 h-5 text-yellow-500 fill-current"></i>
+          </div>
+          <p class="text-gray-700 mb-6 italic">
+            "Precio justo, trabajo impecable. Los recomiendo sin dudarlo."
+          </p>
+          <div class="flex items-center">
+            <div class="w-12 h-12 bg-fixed-orange rounded-full flex items-center justify-center text-fixed-black font-bold">
+              CR
+            </div>
+            <div class="ml-4">
+              <p class="font-bold text-fixed-black">Carlos Ruiz</p>
+              <p class="text-sm text-gray-500">Samsung S23</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="mt-20 grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+        <div>
+          <div class="text-5xl font-bold text-fixed-orange mb-2">500+</div>
+          <p class="text-gray-600">Dispositivos Reparados</p>
+        </div>
+        <div>
+          <div class="text-5xl font-bold text-fixed-orange mb-2">4.9</div>
+          <p class="text-gray-600">Calificación Promedio</p>
+        </div>
+        <div>
+          <div class="text-5xl font-bold text-fixed-orange mb-2">30min</div>
+          <p class="text-gray-600">Tiempo Promedio</p>
+        </div>
+        <div>
+          <div class="text-5xl font-bold text-fixed-orange mb-2">100%</div>
+          <p class="text-gray-600">Clientes Satisfechos</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contacto" class="py-24 bg-fixed-black relative">
+    <div class="absolute inset-0">
+      <img src="assets/imgTres.png" alt="Background" class="w-full h-full object-cover opacity-5" />
+    </div>
+
+    <div class="relative z-10 max-w-6xl mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+        <!-- Contact Info -->
+        <div>
+          <h2 class="text-6xl font-playfair font-bold text-fixed-gray mb-8">
+            Hablemos
+          </h2>
+          <p class="text-xl text-gray-400 mb-12">
+            Estamos acá para resolver tu problema tecnológico de la forma más rápida y profesional.
+          </p>
+
+          <div class="space-y-8">
+            <div class="flex items-start space-x-4">
+              <div class="w-12 h-12 bg-fixed-orange rounded-full flex items-center justify-center flex-shrink-0">
+                <i data-lucide="map-pin" class="w-6 h-6 text-fixed-black"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold mb-2">Ubicación</h3>
+                <p class="text-gray-400">Belgrano, CABA<br>Cerca de todo transporte público</p>
+              </div>
+            </div>
+
+            <div class="flex items-start space-x-4">
+              <div class="w-12 h-12 bg-fixed-orange rounded-full flex items-center justify-center flex-shrink-0">
+                <i data-lucide="clock" class="w-6 h-6 text-fixed-black"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold mb-2">Horarios</h3>
+                <p class="text-gray-400">Lunes a Viernes: 9:00 - 19:00<br>Sábados: 10:00 - 16:00</p>
+              </div>
+            </div>
+
+            <div class="flex items-start space-x-4">
+              <div class="w-12 h-12 bg-fixed-orange rounded-full flex items-center justify-center flex-shrink-0">
+                <i data-lucide="phone" class="w-6 h-6 text-fixed-black"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold mb-2">Contacto Directo</h3>
+                <p class="text-gray-400">WhatsApp: +54 9 11 1234-5678<br>Email: hola@fixedbsas.com</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- WhatsApp CTA -->
+          <a href="https://wa.me/5491234567890" 
+             class="inline-flex items-center space-x-3 bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-4 rounded-full mt-8 hover:from-green-600 hover:to-green-700 transition-all">
+            <i data-lucide="message-circle" class="w-6 h-6"></i>
+            <span class="font-bold">Escribinos por WhatsApp</span>
+          </a>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="bg-gradient-to-br from-gray-900 to-fixed-black rounded-3xl p-10 border border-fixed-gray/10">
+          <h3 class="text-3xl font-playfair font-bold mb-8">Consulta Rápida</h3>
+          
+          <form class="space-y-6">
+            <div>
+              <input type="text" 
+                     placeholder="Tu nombre" 
+                     class="w-full bg-fixed-black/50 border border-fixed-gray/20 rounded-2xl px-6 py-4 text-fixed-gray placeholder-gray-500 focus:border-fixed-orange focus:outline-none transition-colors">
+            </div>
+            
+            <div>
+              <input type="tel" 
+                     placeholder="Tu teléfono" 
+                     class="w-full bg-fixed-black/50 border border-fixed-gray/20 rounded-2xl px-6 py-4 text-fixed-gray placeholder-gray-500 focus:border-fixed-orange focus:outline-none transition-colors">
+            </div>
+            
+            <div>
+              <select class="w-full bg-fixed-black/50 border border-fixed-gray/20 rounded-2xl px-6 py-4 text-fixed-gray focus:border-fixed-orange focus:outline-none transition-colors">
+                <option value="" class="bg-fixed-black">Tipo de dispositivo</option>
+                <option value="iphone" class="bg-fixed-black">iPhone</option>
+                <option value="android" class="bg-fixed-black">Android</option>
+                <option value="tablet" class="bg-fixed-black">Tablet</option>
+                <option value="notebook" class="bg-fixed-black">Notebook</option>
+                <option value="smartwatch" class="bg-fixed-black">Smartwatch</option>
+              </select>
+            </div>
+            
+            <div>
+              <textarea placeholder="Describí el problema" 
+                        rows="4" 
+                        class="w-full bg-fixed-black/50 border border-fixed-gray/20 rounded-2xl px-6 py-4 text-fixed-gray placeholder-gray-500 focus:border-fixed-orange focus:outline-none transition-colors resize-none"></textarea>
+            </div>
+            
+            <button type="submit" 
+                    class="w-full bg-fixed-orange text-fixed-black py-4 rounded-full font-bold hover:bg-fixed-gray transition-all">
+              Enviar Consulta
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Navigation Buttons -->
+  <section class="py-12 bg-gradient-to-b from-fixed-gray to-white relative z-50">
+    <div class="max-w-4xl mx-auto px-6">
+      <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+        <a href="boceto1.html" 
+           class="group flex items-center space-x-3 bg-fixed-black text-white px-8 py-4 rounded-full hover:bg-gray-800 transition-all duration-300 shadow-xl cursor-pointer relative z-50"
+           style="pointer-events: auto;">
+          <i data-lucide="arrow-left" class="w-5 h-5 group-hover:-translate-x-1 transition-transform pointer-events-none"></i>
+          <span class="font-bold pointer-events-none">Boceto Anterior</span>
+        </a>
+        <a href="index.html" 
+           class="group flex items-center space-x-3 bg-gradient-to-r from-fixed-orange to-yellow-500 text-fixed-black px-8 py-4 rounded-full hover:from-yellow-500 hover:to-fixed-orange transition-all duration-300 shadow-xl cursor-pointer relative z-50"
+           style="pointer-events: auto;">
+          <i data-lucide="home" class="w-5 h-5 pointer-events-none"></i>
+          <span class="font-bold pointer-events-none">Volver al Índice</span>
+        </a>
+        <a href="boceto.html" 
+           class="group flex items-center space-x-3 bg-white text-fixed-black border-2 border-fixed-orange px-8 py-4 rounded-full hover:bg-fixed-orange hover:text-white transition-all duration-300 shadow-xl cursor-pointer relative z-50"
+           style="pointer-events: auto;">
+          <span class="font-bold pointer-events-none">Ir al Inicio</span>
+          <i data-lucide="rotate-cw" class="w-5 h-5 group-hover:rotate-180 transition-transform duration-500 pointer-events-none"></i>
+        </a>
+      </div>
+      <div class="text-center mt-6">
+        <p class="text-gray-600">Estás viendo: <span class="font-bold text-fixed-orange">Boceto Premium (3 de 3)</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-12 bg-fixed-gray border-t border-fixed-black/10">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div>
+          <h3 class="text-3xl font-playfair font-bold text-fixed-orange mb-4">FIXED</h3>
+          <p class="text-gray-600">Tu mundo digital, siempre funcionando.</p>
+        </div>
+        
+        <div>
+          <h4 class="font-bold text-fixed-black mb-4">Servicios</h4>
+          <ul class="space-y-2 text-gray-600">
+            <li><a href="#" class="hover:text-fixed-orange transition-colors">Pantallas</a></li>
+            <li><a href="#" class="hover:text-fixed-orange transition-colors">Baterías</a></li>
+            <li><a href="#" class="hover:text-fixed-orange transition-colors">Agua</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="font-bold text-fixed-black mb-4">Empresa</h4>
+          <ul class="space-y-2 text-gray-600">
+            <li><a href="#" class="hover:text-fixed-orange transition-colors">Nosotros</a></li>
+            <li><a href="#" class="hover:text-fixed-orange transition-colors">Garantía</a></li>
+            <li><a href="#" class="hover:text-fixed-orange transition-colors">Blog</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="font-bold text-fixed-black mb-4">Seguinos</h4>
+          <div class="flex space-x-4">
+            <a href="#" class="w-10 h-10 bg-fixed-black rounded-full flex items-center justify-center hover:bg-fixed-orange transition-colors group">
+              <i data-lucide="instagram" class="w-5 h-5 text-fixed-gray group-hover:text-fixed-black"></i>
+            </a>
+            <a href="#" class="w-10 h-10 bg-fixed-black rounded-full flex items-center justify-center hover:bg-fixed-orange transition-colors group">
+              <i data-lucide="facebook" class="w-5 h-5 text-fixed-gray group-hover:text-fixed-black"></i>
+            </a>
+            <a href="#" class="w-10 h-10 bg-fixed-black rounded-full flex items-center justify-center hover:bg-fixed-orange transition-colors group">
+              <i data-lucide="twitter" class="w-5 h-5 text-fixed-gray group-hover:text-fixed-black"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="pt-8 border-t border-fixed-black/10 text-center">
+        <p class="text-gray-600">
+          © 2024 FIXED. Todos los derechos reservados. | <a href="#" class="hover:text-fixed-orange transition-colors">Términos</a> | <a href="#" class="hover:text-fixed-orange transition-colors">Privacidad</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize Lucide icons
+      lucide.createIcons();
+      
+      // Smooth scrolling
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        });
+      });
+
+      // Parallax effect
+      window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const parallaxElements = document.querySelectorAll('.parallax-layer');
+        
+        parallaxElements.forEach(el => {
+          const speed = el.dataset.speed || 0.5;
+          el.style.transform = `translateY(${scrolled * speed}px)`;
+        });
+      });
+
+      // Form handler
+      const form = document.querySelector('form');
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          const button = this.querySelector('button[type="submit"]');
+          const originalText = button.textContent;
+          
+          button.textContent = 'Enviando...';
+          button.disabled = true;
+          
+          setTimeout(() => {
+            button.textContent = '¡Enviado!';
+            button.classList.add('bg-green-500');
+            this.reset();
+            
+            setTimeout(() => {
+              button.textContent = originalText;
+              button.classList.remove('bg-green-500');
+              button.disabled = false;
+            }, 3000);
+          }, 1500);
+        });
+      }
+
+      // Intersection Observer for fade-in animations
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, observerOptions);
+
+      // Observe elements
+      document.querySelectorAll('.bento-hover').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'all 0.6s ease-out';
+        observer.observe(el);
+      });
+
+      // Magnetic button effect
+      document.querySelectorAll('.magnetic-btn').forEach(btn => {
+        btn.addEventListener('mousemove', function(e) {
+          const rect = this.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          
+          this.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+        });
+        
+        btn.addEventListener('mouseleave', function() {
+          this.style.transform = 'translate(0, 0)';
+        });
+      });
+
+      console.log('FIXED v3 - Premium Design Loaded');
+      
+      // Re-initialize Lucide icons for navigation buttons
+      setTimeout(() => {
+        lucide.createIcons();
+      }, 100);
+    });
+  </script>
+</body>
+
+</html>
